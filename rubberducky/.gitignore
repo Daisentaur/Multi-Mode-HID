@@ -1,0 +1,28 @@
+# STM32CubeIDE / Eclipse
+.project
+.cproject
+.settings/
+.metadata/
+.eww/
+*.launch
+
+# Build outputs
+Debug/
+Release/
+build/
+*.o
+*.elf
+*.bin
+*.hex
+*.map
+
+# IDE and OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+.DS_Store
+
+# Other
+*.pyc
+*.log
