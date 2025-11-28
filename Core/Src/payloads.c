@@ -1,11 +1,10 @@
-// payloads.c - Updated for UART bridge
-
 #include "payloads.h"
-#include "uart_bridge.h"
+#include "usb_hid.h"
 #include <string.h>
 
 // Execute payload based on index (0-3)
 void execute_payload(uint8_t index) {
+    // Route to the appropriate payload function
     switch (index) {
         case 0:
             payload_random_link();
@@ -20,119 +19,123 @@ void execute_payload(uint8_t index) {
             payload_illegal_work();
             break;
         default:
+            // Invalid index - do nothing
             break;
     }
 }
 
 // Payload 1: Open Rickroll video in browser
 void payload_random_link(void) {
-    uart_send_delay(2000);  // Wait 2 seconds
-
+    delay_ms(2000);  // Wait 2 seconds for user to focus target
+    
     // Open Run dialog (Windows key + R)
-    uart_send_gui_r();
-    uart_send_delay(500);
-
+    usb_send_keypress(0x15, 0x08); // 'R' key + GUI (Windows key)
+    delay_ms(500);
+    
     // Type YouTube URL
-    uart_send_string("www.youtube.com/watch?v=dQw4w9WgXcQ");
-    uart_send_delay(500);
-    uart_send_enter();
+    send_string("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+    enter_key();
+    delay_ms(3000);
+    
+    // Make video fullscreen
+    usb_send_keypress(0x0F, 0); // 'F' key for fullscreen
 }
 
 // Payload 2: Open Notepad with security message
 void payload_notepad(void) {
-    uart_send_delay(2000);
-
+    delay_ms(2000);
+    
     // Open Notepad via Run dialog
-    uart_send_gui_r();
-    uart_send_delay(500);
-    uart_send_string("notepad");
-    uart_send_enter();
-    uart_send_delay(1000);
-
+    usb_send_keypress(0x15, 0x08); // Win + R
+    delay_ms(500);
+    send_string("notepad");
+    enter_key();
+    delay_ms(1000);
+    
     // Type security awareness message
-    uart_send_string("This is a security demonstration!");
-    uart_send_enter();
-    uart_send_enter();
-    uart_send_string("Your system could be vulnerable to USB attacks.");
-    uart_send_enter();
-    uart_send_string("Always use trusted USB devices!");
-    uart_send_enter();
-    uart_send_string("Educational purpose only.");
+    send_string("This is a security demonstration!");
+    enter_key();
+    enter_key();  // Extra enter for spacing
+    send_string("Your system could be vulnerable to USB attacks.");
+    enter_key();
+    send_string("Always use trusted USB devices!");
+    enter_key();
+    send_string("Educational purpose only.");
 }
 
 // Payload 3: Demonstrate RAM attack concepts (educational)
 void payload_ram_crashing(void) {
-    uart_send_delay(2000);
-
+    delay_ms(2000);
+    
     // Open command prompt
-    uart_send_gui_r();
-    uart_send_delay(500);
-    uart_send_string("cmd");
-    uart_send_enter();
-    uart_send_delay(1000);
-
+    usb_send_keypress(0x15, 0x08); // Win + R
+    delay_ms(500);
+    send_string("cmd");
+    enter_key();
+    delay_ms(1000);
+    
     // Educational message about RAM vulnerabilities
-    uart_send_string("echo ===== RAM SECURITY DEMONSTRATION =====");
-    uart_send_enter();
-    uart_send_delay(500);
-    uart_send_string("echo Real RAM attacks could:");
-    uart_send_enter();
-    uart_send_delay(500);
-    uart_send_string("echo 1. Exhaust memory resources");
-    uart_send_enter();
-    uart_send_delay(500);
-    uart_send_string("echo 2. Perform buffer overflow attacks");
-    uart_send_enter();
-    uart_send_delay(500);
-    uart_send_string("echo 3. Scrape sensitive data from memory");
-    uart_send_enter();
-    uart_send_delay(500);
-    uart_send_string("echo 4. Cause system instability");
-    uart_send_enter();
-    uart_send_delay(1000);
-    uart_send_string("echo This is simulation only - no actual harm!");
-    uart_send_enter();
+    send_string("echo ===== RAM SECURITY DEMONSTRATION =====");
+    enter_key();
+    delay_ms(500);
+    send_string("echo Real RAM attacks could:");
+    enter_key();
+    delay_ms(500);
+    send_string("echo 1. Exhaust memory resources");
+    enter_key();
+    delay_ms(500);
+    send_string("echo 2. Perform buffer overflow attacks");
+    enter_key();
+    delay_ms(500);
+    send_string("echo 3. Scrape sensitive data from memory");
+    enter_key();
+    delay_ms(500);
+    send_string("echo 4. Cause system instability");
+    enter_key();
+    delay_ms(1000);
+    send_string("echo This is simulation only - no actual harm!");
+    enter_key();
 }
 
 // Payload 4: Simulate data collection (educational)
 void payload_illegal_work(void) {
-    uart_send_delay(2000);
-
+    delay_ms(2000);
+    
     // Open command prompt
-    uart_send_gui_r();
-    uart_send_delay(500);
-    uart_send_string("cmd");
-    uart_send_enter();
-    uart_send_delay(1000);
-
+    usb_send_keypress(0x15, 0x08); // Win + R
+    delay_ms(500);
+    send_string("cmd");
+    enter_key();
+    delay_ms(1000);
+    
     // Create temporary directory for demonstration
-    uart_send_string("mkdir C:\\temp_demo 2>nul");
-    uart_send_enter();
-    uart_send_delay(500);
-
+    send_string("mkdir C:\\temp_demo 2>nul");
+    enter_key();
+    delay_ms(500);
+    
     // Simulate collecting system information
-    uart_send_string("echo === SECURITY DEMONSTRATION === > C:\\temp_demo\\info.txt");
-    uart_send_enter();
-    uart_send_delay(300);
-    uart_send_string("echo Simulated data collection >> C:\\temp_demo\\info.txt");
-    uart_send_enter();
-    uart_send_delay(300);
-    uart_send_string("echo This demonstrates what malicious USB >> C:\\temp_demo\\info.txt");
-    uart_send_enter();
-    uart_send_delay(300);
-    uart_send_string("echo devices could potentially do >> C:\\temp_demo\\info.txt");
-    uart_send_enter();
-    uart_send_delay(300);
-    uart_send_string("echo Educational purpose only! >> C:\\temp_demo\\info.txt");
-    uart_send_enter();
-    uart_send_delay(1000);
-
+    send_string("echo === SECURITY DEMONSTRATION === > C:\\temp_demo\\info.txt");
+    enter_key();
+    delay_ms(300);
+    send_string("echo Simulated data collection >> C:\\temp_demo\\info.txt");
+    enter_key();
+    delay_ms(300);
+    send_string("echo This demonstrates what malicious USB >> C:\\temp_demo\\info.txt");
+    enter_key();
+    delay_ms(300);
+    send_string("echo devices could potentially do >> C:\\temp_demo\\info.txt");
+    enter_key();
+    delay_ms(300);
+    send_string("echo Educational purpose only! >> C:\\temp_demo\\info.txt");
+    enter_key();
+    delay_ms(1000);
+    
     // Display the collected "data"
-    uart_send_string("notepad C:\\temp_demo\\info.txt");
-    uart_send_enter();
-    uart_send_delay(1000);
-
+    send_string("notepad C:\\temp_demo\\info.txt");
+    enter_key();
+    delay_ms(1000);
+    
     // Cleanup message
-    uart_send_string("echo Demonstration complete. This was harmless.");
-    uart_send_enter();
+    send_string("echo Demonstration complete. This was harmless.");
+    enter_key();
 }
